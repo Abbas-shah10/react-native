@@ -48,12 +48,12 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
-        name="settings"
+        name="profile"
         options={{
-          title: "Settings",
+          title: "Profile",
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
-              name={focused ? "settings" : "settings-outline"}
+              name={focused ? "person" : "person-outline"}
               size={24}
               color={color}
             />
