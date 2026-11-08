@@ -6,7 +6,7 @@ import { Text, View } from "react-native";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [appIsReady, setIsAppReady] = useState(false);
+  const [appIsReady, setAppIsReady] = useState(false);
 
   useEffect(() => {
     async function prepareApp() {
@@ -15,7 +15,7 @@ export default function RootLayout() {
       } catch (error) {
         console.error(error);
       } finally {
-        setIsAppReady(true);
+        setAppIsReady(true);
       }
     }
 
