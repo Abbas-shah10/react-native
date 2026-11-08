@@ -6,6 +6,23 @@ export default function Layout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: "#4F46E5",
+        tabBarInactiveTintColor: "#94A3B8",
+        tabBarStyle: {
+          backgroundColor: "#FFFFFF",
+          borderTopWidth: 0,
+          height: 68,
+          paddingTop: 8,
+          paddingBottom: 8,
+          elevation: 10,
+          shadowColor: "#0F172A",
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.08,
+          shadowRadius: 12,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: "600",
+        },
       }}
     >
       <Tabs.Screen
