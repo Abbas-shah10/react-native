@@ -1,17 +1,21 @@
-import "../global.css";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { auth } from "../firebase/config";
+// @ts-ignore React Native's bundler handles this side-effect stylesheet import.
+import "../global.css";
 import { useAuthStore } from "../store/useAuthStore";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [appIsReady, setAppIsReady] = useState(false);
-  const { setUser, isLoading: isAuthLoading } = useAuthStore();
+  const { setUser, isLoading: isAuthLoading } = useAuthStore() as {
+    setUser: (user: typeof auth.currentUser) => void;
+    isLoading: boolean;
+  };
 
   // 1. Handle app preparation assets
   useEffect(() => {
