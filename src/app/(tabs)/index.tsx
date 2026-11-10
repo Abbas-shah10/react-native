@@ -33,9 +33,7 @@ export default function DashboardScreen() {
       {/* Task Management */}
       <View className="flex-row items-center justify-between mb-4">
         <View>
-          <Text className="text-black dark:text-white text-xl font-bold">
-            My tasks
-          </Text>
+          <Text className="text-black  text-xl font-bold">My tasks</Text>
           <Text className="text-slate-500 dark:text-slate-400 text-sm mt-1">
             Stay focused and get things done
           </Text>
