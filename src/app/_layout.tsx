@@ -1,13 +1,19 @@
+import "../global.css";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
+import { auth } from "../firebase/config";
+import { useAuthStore } from "../store/useAuthStore";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [appIsReady, setAppIsReady] = useState(false);
+  const { setUser, isLoading: isAuthLoading } = useAuthStore();
 
+  // 1. Handle app preparation assets
   useEffect(() => {
     async function prepareApp() {
       try {
@@ -18,19 +24,28 @@ export default function RootLayout() {
         setAppIsReady(true);
       }
     }
-
     prepareApp();
   }, []);
 
+  // 2. Handle Firebase Auth subscription syncing to Zustand
   useEffect(() => {
-    if (appIsReady) {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return unsubscribe;
+  }, [setUser]);
+
+  // 3. Hide splash screen ONLY when app assets are ready AND firebase auth check is done
+  useEffect(() => {
+    if (appIsReady && !isAuthLoading) {
       SplashScreen.hideAsync().catch((err) =>
         console.warn("Splash hide error:", err),
       );
     }
-  }, [appIsReady]);
+  }, [appIsReady, isAuthLoading]);
 
-  if (!appIsReady) {
+  // Show your styled loading container until everything is ready
+  if (!appIsReady || isAuthLoading) {
     return (
       <View
         style={{
@@ -44,13 +59,14 @@ export default function RootLayout() {
           width: "100vw",
         }}
       >
-        <Text>Loading...</Text>
+        <Text style={{ color: "#fff" }}>Loading...</Text>
       </View>
     );
   }
 
   return (
-    <Stack>
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
         name="task/create"
