@@ -1,4 +1,6 @@
+import { auth } from "@/firebase/config";
 import { useRouter } from "expo-router";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -15,6 +17,27 @@ const register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const handleRegister = async () => {
+    if (!email || !password) {
+      setError("Please fill out all fields.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+    setError("");
+    setLoading(true);
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      router.push("/");
+    } catch (error: any) {
+      setError(error.message || "Failed to create an account.");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <View className="flex-1 bg-white justify-center px-6">
       <View className="bg-white rounded-2xl  p-8 w-full">
@@ -67,6 +90,7 @@ const register = () => {
         </View>
 
         <TouchableOpacity
+          onPress={handleRegister}
           className={`bg-blue-600 rounded-lg py-3 items-center mb-4 ${loading ? "opacity-60" : ""}`}
           disabled={loading}
         >

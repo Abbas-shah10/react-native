@@ -1,4 +1,5 @@
 import { auth } from "@/firebase/config";
+import { router } from "expo-router";
 import { signOut } from "firebase/auth";
 import { create } from "zustand";
 
@@ -21,6 +22,8 @@ export const useAuthStore = create((set) => ({
 
     try {
       await signOut(auth);
+      set({ user: null, isLoading: false });
+      router.replace("/login");
     } catch (error) {
       console.error("Error SIgn out user", error);
       set({ isLoading: false });

@@ -1,6 +1,9 @@
+import { auth } from "@/firebase/config";
 import { useRouter } from "expo-router";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import {
+  ActivityIndicator,
   Pressable,
   Text,
   TextInput,
@@ -12,6 +15,25 @@ const Login = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      setError("Both the fields are required");
+      return;
+    }
+    setEmail("");
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      router.push("/");
+    } catch (error: any) {
+      setError(error.message || "Failed to create an account.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View className="flex-1 justify-center bg-white px-6">
@@ -20,6 +42,10 @@ const Login = () => {
         <Text className="mb-8  text-center text-2xl font-bold text-slate-800">
           Sign in to continue to your account.
         </Text>
+
+        {error ? (
+          <Text className="text-red-500 mb-4 text-center">{error}</Text>
+        ) : null}
 
         <Text className="mb-2 text-sm font-medium text-black">Email</Text>
         <TextInput
@@ -50,9 +76,17 @@ const Login = () => {
           </Text>
         </Pressable> */}
 
-        <Pressable className="items-center rounded-xl mt-10 bg-indigo-500 py-4 active:bg-indigo-600">
-          <Text className="text-base font-bold text-white">Sign in</Text>
-        </Pressable>
+        <TouchableOpacity
+          onPress={handleLogin}
+          className={`bg-blue-600 mt-10 rounded-lg py-3 items-center mb-4 ${loading ? "opacity-60" : ""}`}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text className="text-white font-semibold text-base">Login</Text>
+          )}
+        </TouchableOpacity>
 
         <View className="mt-8 flex-row justify-center">
           <Text className="text-slate-400">Don't have an account? </Text>

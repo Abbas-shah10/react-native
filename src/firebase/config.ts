@@ -1,12 +1,6 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { initializeApp } from "firebase/app";
-import {
-  getAuth,
-  getReactNativePersistence,
-  initializeAuth,
-} from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { Platform } from "react-native";
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -20,17 +14,8 @@ const firebaseConfig = {
 // Initialize Firebase App
 const app = initializeApp(firebaseConfig);
 
-// Initialize Auth conditionally depending on if it's Web or Mobile
-let auth;
-if (Platform.OS === "web") {
-  // Pure Web setup using standard browser storage
-  auth = getAuth(app);
-} else {
-  // Mobile setup (when you eventually compile to Android)
-  auth = initializeAuth(app, {
-    persistence: getReactNativePersistence(AsyncStorage),
-  });
-}
+// Initialize Auth using the platform's default persistence.
+const auth = getAuth(app);
 
 // Initialize Firestore
 const db = getFirestore(app);
