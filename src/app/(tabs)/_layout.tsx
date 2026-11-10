@@ -1,7 +1,6 @@
 import { useAuthStore } from "@/store/useAuthStore";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { TouchableOpacity } from "react-native";
 
 export default function Layout() {
   const logout = useAuthStore((state) => state.logout);
@@ -31,18 +30,13 @@ export default function Layout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               name={focused ? "home" : "home-outline"}
               size={24}
               color={color}
             />
-          ),
-          headerRight: () => (
-            <TouchableOpacity onPress={logout}>
-              <Ionicons name="log-out-outline" size={24} color="#EF4444" />
-            </TouchableOpacity>
           ),
         }}
       />
