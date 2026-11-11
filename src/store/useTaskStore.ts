@@ -1,5 +1,13 @@
 import { db } from "@/firebase/config";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  orderBy,
+  query,
+  serverTimestamp,
+  where,
+} from "firebase/firestore";
 import { create } from "zustand";
 import { useAuthStore } from "./useAuthStore";
 
@@ -23,7 +31,7 @@ interface TaskState {
     dueDate: string,
     priority: Task["priority"],
   ) => Promise<void>;
-  fetchTasks: () => Promise<void>;
+  fetchTasks: (userId: string) => Promise<void>;
 }
 
 export const useTaskStore = create<TaskState>((set) => ({
@@ -68,5 +76,32 @@ export const useTaskStore = create<TaskState>((set) => ({
       throw error;
     }
   },
-  fetchTasks: async () => {},
+  fetchTasks: async (userId: string) => {
+    set({ isLoading: true });
+    try {
+      let taskQuery = query(
+        collection(db, "tasks"),
+        orderBy("createdAt", "desc"),
+      );
+
+      if (userId) {
+        taskQuery = query(
+          collection(db, "tasks"),
+          where("userId", "==", userId),
+          orderBy("createdAt", "desc"),
+        );
+      }
+
+      const querySnapShot = await getDocs(taskQuery);
+      const loadedTasks: Task[] = [];
+
+      querySnapShot.forEach((doc) => {
+        loadedTasks.push({ id: doc.id, ...doc.data() } as Task);
+      });
+
+      set({ tasks: loadedTasks, isLoading: false });
+    } catch (error: any) {
+      console.log(error.message || "Error fetching tasks from firebase");
+    }
+  },
 }));
