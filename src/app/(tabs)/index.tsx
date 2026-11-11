@@ -38,7 +38,10 @@ export default function DashboardScreen() {
             Stay focused and get things done
           </Text>
         </View>
-        <TouchableOpacity className="bg-blue-600 px-4 py-3 rounded-2xl">
+        <TouchableOpacity
+          className="bg-blue-600 px-4 py-3 rounded-2xl"
+          onPress={() => router.push("/tasks")}
+        >
           <Text className="text-white font-semibold">+ New task</Text>
         </TouchableOpacity>
       </View>
