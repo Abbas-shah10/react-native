@@ -2,7 +2,7 @@ import { auth } from "@/firebase/config";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useTaskStore } from "@/store/useTaskStore";
 import { useRouter } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function DashboardScreen() {
@@ -11,7 +11,10 @@ export default function DashboardScreen() {
   const user = useAuthStore(
     (state) => (state as { user?: { email?: string | null } }).user,
   );
-  const { fetchTasks, tasks } = useTaskStore();
+  const { fetchTasks, tasks, toggleTaskCompletion } = useTaskStore();
+  const [completionOverrides, setCompletionOverrides] = useState<
+    Record<string, boolean>
+  >({});
 
   const email = user?.email ?? "";
 
@@ -22,8 +25,10 @@ export default function DashboardScreen() {
   }, [loggedInUser]);
 
   // Calculate dynamic stats
-  const todoCount = tasks.filter((task) => !task.completed).length;
-  const completedCount = tasks.filter((task) => task.completed).length;
+  const isTaskCompleted = (task: (typeof tasks)[number]) =>
+    completionOverrides[task.id] ?? task.completed;
+  const todoCount = tasks.filter((task) => !isTaskCompleted(task)).length;
+  const completedCount = tasks.filter(isTaskCompleted).length;
 
   // Helper styles for Priority Badges
   const getPriorityStyles = (priority: string) => {
@@ -134,6 +139,7 @@ export default function DashboardScreen() {
           /* Task List Map Loop */
           tasks.map((task) => {
             const priorityStyle = getPriorityStyles(task.priority);
+            const isCompleted = isTaskCompleted(task);
             return (
               <View
                 key={task.id}
@@ -141,13 +147,27 @@ export default function DashboardScreen() {
               >
                 <View className="flex-row items-start">
                   {/* Dynamic Status Ring indicator */}
-                  <View
-                    className={`w-5 h-5 rounded-full border-2 mt-1 mr-3 ${task.completed ? "border-emerald-500 bg-emerald-500/10" : "border-blue-500"}`}
-                  />
+                  <TouchableOpacity
+                    accessibilityRole="checkbox"
+                    accessibilityState={{ checked: isCompleted }}
+                    accessibilityLabel={`Mark ${task.title} as ${isCompleted ? "incomplete" : "complete"}`}
+                    onPress={() => {
+                      setCompletionOverrides((current) => ({
+                        ...current,
+                        [task.id]: !isCompleted,
+                      }));
+                      toggleTaskCompletion(task.id, isCompleted);
+                    }}
+                    className={`w-5 h-5 rounded-full border-2 mt-1 mr-3 items-center justify-center ${isCompleted ? "border-emerald-500 bg-emerald-500" : "border-blue-500"}`}
+                  >
+                    {isCompleted && (
+                      <Text className="text-white text-xs font-bold">✓</Text>
+                    )}
+                  </TouchableOpacity>
 
                   <View className="flex-1">
                     <Text
-                      className={`font-semibold text-base text-black dark:text-white ${task.completed ? "line-through text-slate-400 dark:text-slate-500" : ""}`}
+                      className={`font-semibold text-base text-black dark:text-white ${isCompleted ? "line-through text-slate-400 dark:text-slate-500" : ""}`}
                     >
                       {task.title}
                     </Text>

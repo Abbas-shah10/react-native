@@ -2,10 +2,12 @@ import { db } from "@/firebase/config";
 import {
   addDoc,
   collection,
+  doc,
   getDocs,
   orderBy,
   query,
   serverTimestamp,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { create } from "zustand";
@@ -32,6 +34,14 @@ interface TaskState {
     priority: Task["priority"],
   ) => Promise<void>;
   fetchTasks: (userId: string) => Promise<void>;
+  updateTask: (
+    taskId: string,
+    updatedFields: Record<string, any>,
+  ) => Promise<void>;
+  toggleTaskCompletion: (
+    taskId: string,
+    currentStatus: boolean,
+  ) => Promise<void>;
 }
 
 export const useTaskStore = create<TaskState>((set) => ({
@@ -102,6 +112,24 @@ export const useTaskStore = create<TaskState>((set) => ({
       set({ tasks: loadedTasks, isLoading: false });
     } catch (error: any) {
       console.log(error.message || "Error fetching tasks from firebase");
+    }
+  },
+  updateTask: async () => {},
+  toggleTaskCompletion: async (taskId, currentStatus) => {
+    set({ isLoading: true });
+    try {
+      const taskRef = doc(db, "tasks", taskId);
+
+      await updateDoc(taskRef, { completed: !currentStatus });
+
+      set((state) => ({
+        tasks: state.tasks.map((task) =>
+          task.id === taskId ? { ...task, completed: true } : task,
+        ),
+      }));
+    } catch (error) {
+      console.error("Error updating task in Firestore:", error);
+      throw error;
     }
   },
 }));
