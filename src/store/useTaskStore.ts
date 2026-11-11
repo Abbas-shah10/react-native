@@ -8,15 +8,21 @@ interface Task {
   title: string;
   description: string;
   completed: boolean;
-  priority?: "low" | "medium" | "high";
+  priority: "low" | "medium" | "high";
   userId: string;
   createdAt: Date;
+  dueDate: string | null;
 }
 
 interface TaskState {
   tasks: Task[];
   isLoading: boolean;
-  addTask: (title: string, description: string) => Promise<void>;
+  addTask: (
+    ttitle: string,
+    description: string,
+    dueDate: string,
+    priority: Task["priority"],
+  ) => Promise<void>;
   fetchTasks: () => Promise<void>;
 }
 
@@ -24,8 +30,17 @@ export const useTaskStore = create<TaskState>((set) => ({
   tasks: [],
   isLoading: false,
 
-  addTask: async (title: string, description: string) => {
-    const user = useAuthStore((state) => state.user);
+  addTask: async (
+    title: string,
+    description: string,
+    dueDate: string,
+    priority: Task["priority"],
+  ): Promise<void> => {
+    const user = useAuthStore.getState().user;
+    if (!user) {
+      throw new Error("You must be signed in to create a task.");
+    }
+
     set({ isLoading: true });
     try {
       const newTask = {
@@ -34,6 +49,8 @@ export const useTaskStore = create<TaskState>((set) => ({
         completed: false,
         userId: user.uid,
         createdAt: new Date(),
+        priority,
+        dueDate: dueDate || null,
       };
 
       const docRef = await addDoc(collection(db, "tasks"), {

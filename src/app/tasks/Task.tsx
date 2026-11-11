@@ -1,6 +1,8 @@
+import { useTaskStore } from "@/store/useTaskStore";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   Pressable,
   ScrollView,
@@ -14,22 +16,30 @@ const Task = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
-  const [priority, setPriority] = useState("Medium");
+  const [priority, setPriority] = useState<"low" | "medium" | "high">("low");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const createTask = () => {
+  const addTask = useTaskStore((state) => state.addTask);
+
+  const createTask = async () => {
     if (!title.trim()) {
-      Alert.alert(
-        "Task title required",
-        "Add a title before creating your task.",
-      );
+      Alert.alert("Validation Error", "Please provide a task title!");
       return;
     }
 
-    Alert.alert("Task created", `“${title.trim()}” is ready to go.`);
-    setTitle("");
-    setDescription("");
-    setDueDate("");
-    setPriority("Medium");
+    try {
+      setLoading(true);
+      setError("");
+      await addTask(title, description, dueDate, priority);
+    } catch (error) {
+      console.error("Error creating new task:", error);
+      setError(
+        error instanceof Error ? error.message : "Error creating new task",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -56,7 +66,7 @@ const Task = () => {
           </View>
         </View>
 
-        <View className="mb-6 rounded-3xl bg-indigo-600 p-5">
+        {/* <View className="mb-6 rounded-3xl bg-indigo-600 p-5">
           <Text className="text-sm font-medium text-indigo-100">
             A fresh start
           </Text>
@@ -66,7 +76,9 @@ const Task = () => {
           <Text className="mt-1 text-sm leading-5 text-indigo-100">
             Break it down, set a deadline, and get moving.
           </Text>
-        </View>
+        </View> */}
+
+        {error && <Text className="text-red-500">{error}</Text>}
 
         <View className="mb-5">
           <Text className="mb-2 text-sm font-semibold text-slate-800">
@@ -116,7 +128,7 @@ const Task = () => {
             Priority
           </Text>
           <View className="flex-row">
-            {["Low", "Medium", "High"].map((item) => {
+            {["low", "medium", "high"].map((item) => {
               const selected = priority === item;
               return (
                 <Pressable
@@ -137,9 +149,16 @@ const Task = () => {
 
         <Pressable
           onPress={createTask}
+          disabled={loading}
           className="items-center rounded-2xl bg-indigo-600 py-4 active:bg-indigo-700"
         >
-          <Text className="text-base font-bold text-white">Create task</Text>
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text className="text-white font-semibold text-base">
+              Create Task
+            </Text>
+          )}
         </Pressable>
         <Text className="mt-4 text-center text-xs text-slate-400">
           You can always edit your task later.

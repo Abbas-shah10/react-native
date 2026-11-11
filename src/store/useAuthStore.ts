@@ -1,21 +1,23 @@
 import { auth } from "@/firebase/config";
 import { router } from "expo-router";
-import { signOut } from "firebase/auth";
+import { signOut, type User } from "firebase/auth";
 import { create } from "zustand";
 
-interface User {
-  username: string;
-  email: string;
-  password: string;
+interface AuthState {
+  user: User | null;
+  isLoading: boolean;
+  setUser: (user: User | null) => void;
+  setLoading: (isLoading: boolean) => void;
+  logout: () => Promise<void>;
 }
 
-export const useAuthStore = create((set) => ({
+export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isLoading: true,
 
-  setUser: (user: User) => set({ user, isLoading: false }),
+  setUser: (user) => set({ user, isLoading: false }),
 
-  setLoading: (isLoading: boolean) => ({ isLoading }),
+  setLoading: (isLoading) => set({ isLoading }),
 
   logout: async () => {
     set({ isLoading: true });
