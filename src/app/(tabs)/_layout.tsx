@@ -1,82 +1,97 @@
-import { useAuthStore } from "@/store/useAuthStore";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
+import type { ComponentProps } from "react";
+import { View } from "react-native";
 
 export default function Layout() {
-  const logout = useAuthStore((state) => state.logout);
+  const renderTabIcon =
+    (
+      activeIcon: ComponentProps<typeof Ionicons>["name"],
+      inactiveIcon: ComponentProps<typeof Ionicons>["name"],
+    ) =>
+    ({
+      color,
+      focused,
+      size,
+    }: {
+      color: string | null;
+      focused: boolean;
+      size: number;
+    }) => (
+      <View
+        style={{
+          minWidth: 42,
+          height: 30,
+          paddingHorizontal: 10,
+          alignItems: "center",
+          justifyContent: "center",
+          borderRadius: 12,
+          backgroundColor: focused ? "#2563EB" : "transparent",
+        }}
+      >
+        <Ionicons
+          name={focused ? activeIcon : inactiveIcon}
+          size={size || 21}
+          color={focused ? "#FFFFFF" : (color ?? undefined)}
+        />
+      </View>
+    );
+
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: "#3B82F6",
+        tabBarActiveTintColor: "#F8FAFC",
         tabBarInactiveTintColor: "#94A3B8",
         tabBarStyle: {
-          backgroundColor: "#FFFFFF",
-          borderTopWidth: 0,
-          height: 68,
-          paddingTop: 8,
-          paddingBottom: 8,
-          elevation: 10,
-          shadowColor: "#0F172A",
-          shadowOffset: { width: 0, height: -4 },
+          backgroundColor: "#111B36",
+          borderTopColor: "#263454",
+          borderTopWidth: 1,
+          height: 76,
+          paddingTop: 7,
+          paddingBottom: 9,
+          elevation: 16,
+          shadowColor: "#1E3A5F",
+          shadowOffset: { width: 0, height: -5 },
           shadowOpacity: 0.08,
-          shadowRadius: 12,
+          shadowRadius: 14,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
+          fontSize: 10,
           fontWeight: "600",
+          marginTop: 2,
+        },
+        tabBarItemStyle: {
+          paddingVertical: 2,
         },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
+          title: "Home",
           headerShown: false,
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "home" : "home-outline"}
-              size={24}
-              color={color}
-            />
-          ),
+          tabBarIcon: renderTabIcon("home", "home-outline"),
         }}
       />
       <Tabs.Screen
         name="board"
         options={{
           title: "Board",
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "albums" : "albums-outline"}
-              size={24}
-              color={color}
-            />
-          ),
+          tabBarIcon: renderTabIcon("albums", "albums-outline"),
         }}
       />
       <Tabs.Screen
         name="insights"
         options={{
           title: "Insights",
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "analytics" : "analytics-outline"}
-              size={24}
-              color={color}
-            />
-          ),
+          tabBarIcon: renderTabIcon("analytics", "analytics-outline"),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: "Profile",
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "person" : "person-outline"}
-              size={24}
-              color={color}
-            />
-          ),
+          tabBarIcon: renderTabIcon("person", "person-outline"),
         }}
       />
     </Tabs>

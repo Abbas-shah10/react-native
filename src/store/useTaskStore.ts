@@ -2,6 +2,7 @@ import { db } from "@/firebase/config";
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   orderBy,
@@ -42,6 +43,7 @@ interface TaskState {
     taskId: string,
     currentStatus: boolean,
   ) => Promise<void>;
+  deleteTask: (taskId: string) => Promise<void>;
 }
 
 export const useTaskStore = create<TaskState>((set) => ({
@@ -129,6 +131,20 @@ export const useTaskStore = create<TaskState>((set) => ({
       }));
     } catch (error) {
       console.error("Error updating task in Firestore:", error);
+      throw error;
+    }
+  },
+  deleteTask: async (taskId) => {
+    try {
+      const taskRef = doc(db, "tasks", taskId);
+
+      await deleteDoc(taskRef);
+
+      set((state) => ({
+        tasks: state.tasks.filter((task) => task.id !== taskId),
+      }));
+    } catch (error) {
+      console.error("Error deleting task from Firestore:", error);
       throw error;
     }
   },
