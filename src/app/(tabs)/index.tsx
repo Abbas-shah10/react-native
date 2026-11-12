@@ -22,7 +22,7 @@ export default function DashboardScreen() {
     if (loggedInUser) {
       fetchTasks(loggedInUser.uid);
     }
-  }, [loggedInUser]);
+  }, [loggedInUser, fetchTasks]);
 
   // Calculate dynamic stats
   const isTaskCompleted = (task: (typeof tasks)[number]) =>
