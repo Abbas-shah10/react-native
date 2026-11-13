@@ -1,4 +1,4 @@
-import { Stack, useRouter } from "expo-router";
+import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
@@ -11,13 +11,11 @@ import { useAuthStore } from "../store/useAuthStore";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const router = useRouter();
   const [appIsReady, setAppIsReady] = useState(false);
   const { setUser, isLoading: isAuthLoading } = useAuthStore() as {
     setUser: (user: typeof auth.currentUser) => void;
     isLoading: boolean;
   };
-  const user = auth.currentUser;
 
   // 1. Handle app preparation assets
   useEffect(() => {
