@@ -1,4 +1,4 @@
-import { Stack } from "expo-router";
+import { Redirect, Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
@@ -12,10 +12,16 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [appIsReady, setAppIsReady] = useState(false);
-  const { setUser, isLoading: isAuthLoading } = useAuthStore() as {
+  const {
+    user,
+    setUser,
+    isLoading: isAuthLoading,
+  } = useAuthStore() as {
+    user: typeof auth.currentUser;
     setUser: (user: typeof auth.currentUser) => void;
     isLoading: boolean;
   };
+  const segments = useSegments();
 
   // 1. Handle app preparation assets
   useEffect(() => {
@@ -66,6 +72,14 @@ export default function RootLayout() {
         <Text style={{ color: "#fff" }}>Loading...</Text>
       </View>
     );
+  }
+
+  const isInAuthGroup = segments[0] === "(auth)";
+  if (!user && !isInAuthGroup) {
+    return <Redirect href="/(auth)/login" />;
+  }
+  if (user && isInAuthGroup) {
+    return <Redirect href="/(tabs)" />;
   }
 
   return (
