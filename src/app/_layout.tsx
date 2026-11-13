@@ -19,12 +19,6 @@ export default function RootLayout() {
   };
   const user = auth.currentUser;
 
-  useEffect(() => {
-    if (!user) {
-      return router.push("/login");
-    }
-  }, [router, user]);
-
   // 1. Handle app preparation assets
   useEffect(() => {
     async function prepareApp() {
