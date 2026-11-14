@@ -98,7 +98,7 @@ const Insights = () => {
           </Text>
         </View>
 
-        <View className="flex-1 rounded-2xl bg-slate-900 p-4">
+        <View className="flex-1 rounded-2xl bg-slate-800 p-4">
           <Text className="text-[10px] font-semibold uppercase tracking-[2px] text-slate-300">
             Rate
           </Text>
