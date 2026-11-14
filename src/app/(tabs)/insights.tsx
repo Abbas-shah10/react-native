@@ -1,67 +1,138 @@
+import { useTaskStore } from "@/store/useTaskStore";
 import { ScrollView, Text, View } from "react-native";
 
 const Insights = () => {
+  const { tasks } = useTaskStore();
+
+  const completedCount = tasks.filter(
+    (task) => task.completed === true || task.status === "done",
+  ).length;
+  const completionRate =
+    tasks.length > 0 ? Math.round((completedCount / tasks.length) * 100) : 0;
+
+  const weekStart = new Date();
+  weekStart.setHours(0, 0, 0, 0);
+  weekStart.setDate(weekStart.getDate() - ((weekStart.getDay() + 6) % 7));
+
+  const weeklyActivity = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(weekStart);
+    date.setDate(weekStart.getDate() + index);
+
+    return {
+      day: date.toLocaleDateString("en", { weekday: "short" }).slice(0, 1),
+      count: 0,
+    };
+  });
+
+  tasks.forEach((task) => {
+    const taskData = task as unknown as Record<string, unknown>;
+    const dateValue =
+      taskData.createdAt ??
+      taskData.created_at ??
+      taskData.completedAt ??
+      taskData.date;
+
+    if (dateValue == null) return;
+
+    const taskDate = new Date(String(dateValue));
+    if (Number.isNaN(taskDate.getTime())) return;
+
+    taskDate.setHours(0, 0, 0, 0);
+    const dayIndex = Math.round(
+      (taskDate.getTime() - weekStart.getTime()) / 86400000,
+    );
+
+    if (dayIndex >= 0 && dayIndex < weeklyActivity.length) {
+      weeklyActivity[dayIndex].count += 1;
+    }
+  });
+
+  const maxDailyTasks = Math.max(
+    1,
+    ...weeklyActivity.map(({ count }) => count),
+  );
+  const thisWeekTaskCount = weeklyActivity.reduce(
+    (total, { count }) => total + count,
+    0,
+  );
+  const busiestDay = weeklyActivity.reduce(
+    (busiest, day) => (day.count > busiest.count ? day : busiest),
+    weeklyActivity[0],
+  );
+
+  const busiestDayLabel =
+    busiestDay.day === "M"
+      ? "Monday"
+      : busiestDay.day === "T"
+        ? "Tuesday"
+        : busiestDay.day === "W"
+          ? "Wednesday"
+          : busiestDay.day === "T"
+            ? "Thursday"
+            : busiestDay.day === "F"
+              ? "Friday"
+              : busiestDay.day === "S"
+                ? "Saturday"
+                : "Sunday";
+
   return (
     <ScrollView
-      className="flex-1 bg-slate-950"
-      contentContainerClassName="px-5 pb-10 pt-14"
+      className="flex-1 bg-slate-900"
+      contentContainerClassName="px-4 pb-10 pt-12"
     >
-      <View className="mb-7">
-        <Text className="text-sm font-semibold uppercase tracking-[3px] text-indigo-600">
-          Your progress
-        </Text>
-        <Text className="mt-2 text-3xl font-bold text-slate-200">Insights</Text>
-        <Text className="mt-2 text-base text-slate-500">
-          A snapshot of how you&apos;re doing this week.
-        </Text>
+      <Text className="text-2xl font-bold text-slate-200">Insights</Text>
+      <Text className="mt-1 text-sm text-slate-500">
+        Your weekly progress at a glance.
+      </Text>
+
+      <View className="mt-6 flex-row gap-3">
+        <View className="flex-1 rounded-2xl border border-slate-200 bg-white p-4">
+          <Text className="text-[10px] font-semibold uppercase tracking-[2px] text-slate-400">
+            Done
+          </Text>
+          <Text className="mt-2 text-3xl font-bold text-slate-900">
+            {completedCount}
+          </Text>
+          <Text className="mt-1 text-xs text-slate-500">
+            of {tasks.length} tasks
+          </Text>
+        </View>
+
+        <View className="flex-1 rounded-2xl bg-slate-900 p-4">
+          <Text className="text-[10px] font-semibold uppercase tracking-[2px] text-slate-300">
+            Rate
+          </Text>
+          <Text className="mt-2 text-3xl font-bold text-white">
+            {completionRate}%
+          </Text>
+          <Text className="mt-1 text-xs text-slate-300">Completed</Text>
+        </View>
       </View>
 
-      <View className="mb-5 flex-row gap-3">
-        <View className="flex-1 rounded-3xl bg-indigo-600 p-5">
-          <Text className="text-sm font-medium text-indigo-100">
-            Weekly activity
+      <View className="mt-5 rounded-2xl border border-slate-200 bg-white p-4">
+        <View className="mb-4 flex-row items-center justify-between">
+          <Text className="text-base font-semibold text-slate-900">
+            This week
           </Text>
-          <Text className="mt-3 text-3xl font-bold text-white">12.5 hrs</Text>
-          <Text className="mt-2 text-sm text-indigo-100">
-            ↑ 18% from last week
-          </Text>
-        </View>
-        <View className="flex-1 rounded-3xl bg-white p-5">
-          <Text className="text-sm font-medium text-slate-500">
-            Current streak
-          </Text>
-          <Text className="mt-3 text-3xl font-bold text-slate-900">7 days</Text>
-          <Text className="mt-2 text-sm text-emerald-600">
-            You&apos;re on a roll
+          <Text className="text-xs text-slate-500">
+            {thisWeekTaskCount} tasks
           </Text>
         </View>
-      </View>
 
-      <View className="mb-5 rounded-3xl bg-white p-5">
-        <View className="mb-5 flex-row items-center justify-between">
-          <View>
-            <Text className="text-lg font-bold text-slate-900">This week</Text>
-            <Text className="mt-1 text-sm text-slate-500">Activity by day</Text>
-          </View>
-          <Text className="rounded-full bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700">
-            12.5 hours
-          </Text>
-        </View>
-        <View className="h-36 flex-row items-end justify-between px-1">
-          {[
-            { day: "M", height: "h-14" },
-            { day: "T", height: "h-20" },
-            { day: "W", height: "h-12" },
-            { day: "T", height: "h-28" },
-            { day: "F", height: "h-24" },
-            { day: "S", height: "h-16" },
-            { day: "S", height: "h-10" },
-          ].map((item, index) => (
-            <View key={`${item.day}-${index}`} className="items-center gap-2">
-              <View
-                className={`w-7 rounded-full ${index === 3 ? "bg-indigo-600" : "bg-indigo-100"} ${item.height}`}
-              />
-              <Text className="text-xs font-medium text-slate-400">
+        <View className="h-28 flex-row items-end justify-between">
+          {weeklyActivity.map((item, index) => (
+            <View key={`${item.day}-${index}`} className="items-center">
+              <View className="h-20 w-8 items-center justify-end">
+                <View
+                  className={`w-7 rounded-full ${
+                    item.count > 0 ? "bg-slate-900" : "bg-slate-200"
+                  }`}
+                  style={{
+                    height: Math.max(10, (item.count / maxDailyTasks) * 72),
+                  }}
+                />
+              </View>
+              <Text className="mt-2 text-[10px] font-medium text-slate-500">
                 {item.day}
               </Text>
             </View>
@@ -69,57 +140,20 @@ const Insights = () => {
         </View>
       </View>
 
-      <View className="mb-5 rounded-3xl bg-white p-5">
-        <Text className="text-lg font-bold text-slate-900">Top focus</Text>
-        <Text className="mt-1 text-sm text-slate-500">
-          Where your time went
-        </Text>
-        <View className="mt-5 gap-4">
-          {[
-            {
-              name: "Productivity",
-              time: "5h 20m",
-              width: "w-[78%]",
-              color: "bg-violet-500",
-            },
-            {
-              name: "Learning",
-              time: "4h 10m",
-              width: "w-[61%]",
-              color: "bg-sky-500",
-            },
-            {
-              name: "Wellness",
-              time: "3h 05m",
-              width: "w-[44%]",
-              color: "bg-emerald-500",
-            },
-          ].map((item) => (
-            <View key={item.name}>
-              <View className="mb-2 flex-row justify-between">
-                <Text className="text-sm font-medium text-slate-700">
-                  {item.name}
-                </Text>
-                <Text className="text-sm text-slate-500">{item.time}</Text>
-              </View>
-              <View className="h-2 overflow-hidden rounded-full bg-slate-100">
-                <View
-                  className={`h-full rounded-full ${item.width} ${item.color}`}
-                />
-              </View>
-            </View>
-          ))}
-        </View>
-      </View>
+      <View className="mt-5 rounded-2xl border border-slate-200 bg-white p-4">
+        <Text className="text-base font-semibold text-slate-900">Summary</Text>
 
-      <View className="rounded-3xl border border-indigo-100 bg-indigo-50 p-5">
-        <Text className="text-base font-bold text-indigo-950">
-          A little insight
-        </Text>
-        <Text className="mt-2 leading-6 text-indigo-800">
-          You were most active on Thursday. Keep building on that momentum with
-          a small goal today.
-        </Text>
+        {thisWeekTaskCount === 0 ? (
+          <Text className="mt-3 text-sm leading-6 text-slate-600">
+            No tasks this week yet. Add one to start tracking your progress.
+          </Text>
+        ) : (
+          <Text className="mt-3 text-sm leading-6 text-slate-600">
+            You created {thisWeekTaskCount} tasks this week and were busiest on{" "}
+            {busiestDayLabel}. You completed {completedCount} of {tasks.length}{" "}
+            tasks overall.
+          </Text>
+        )}
       </View>
     </ScrollView>
   );
