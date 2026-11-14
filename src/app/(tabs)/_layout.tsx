@@ -9,6 +9,7 @@ export default function Layout() {
       activeIcon: ComponentProps<typeof Ionicons>["name"],
       inactiveIcon: ComponentProps<typeof Ionicons>["name"],
     ) =>
+    // eslint-disable-next-line react/display-name
     ({
       color,
       focused,
@@ -76,14 +77,14 @@ export default function Layout() {
       <Tabs.Screen
         name="board"
         options={{
-          title: "Board",
+          headerShown: false,
           tabBarIcon: renderTabIcon("albums", "albums-outline"),
         }}
       />
       <Tabs.Screen
         name="insights"
         options={{
-          title: "Insights",
+          headerShown: false,
           tabBarIcon: renderTabIcon("analytics", "analytics-outline"),
         }}
       />

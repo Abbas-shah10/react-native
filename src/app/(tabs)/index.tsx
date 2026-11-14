@@ -11,7 +11,8 @@ export default function DashboardScreen() {
   const user = useAuthStore(
     (state) => (state as { user?: { email?: string | null } }).user,
   );
-  const { fetchTasks, tasks, toggleTaskCompletion } = useTaskStore();
+  const { fetchTasks, tasks, toggleTaskCompletion, deleteTask } =
+    useTaskStore();
   const [completionOverrides, setCompletionOverrides] = useState<
     Record<string, boolean>
   >({});
@@ -197,6 +198,15 @@ export default function DashboardScreen() {
                     >
                       {task.priority || "Normal"}
                     </Text>
+                  </View>
+
+                  <View className="absolute right-0 bottom-0">
+                    <TouchableOpacity
+                      onPress={() => deleteTask(task.id)}
+                      className="text-red-400"
+                    >
+                      Delete
+                    </TouchableOpacity>
                   </View>
                 </View>
               </View>
