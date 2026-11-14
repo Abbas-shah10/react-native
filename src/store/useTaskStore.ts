@@ -70,6 +70,7 @@ export const useTaskStore = create<TaskState>((set) => ({
         completed: false,
         userId: user.uid,
         createdAt: new Date(),
+        status: "upcoming" as Task["status"],
         priority,
         dueDate: dueDate || null,
       };
@@ -143,9 +144,7 @@ export const useTaskStore = create<TaskState>((set) => ({
 
       set((state) => ({
         tasks: state.tasks.map((task) =>
-          task.id === taskId
-            ? { ...task, completed: !currentStatus }
-            : task,
+          task.id === taskId ? { ...task, completed: !currentStatus } : task,
         ),
         isLoading: false,
       }));
