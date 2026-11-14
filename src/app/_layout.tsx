@@ -90,6 +90,10 @@ export default function RootLayout() {
         name="tasks/index"
         options={{ presentation: "modal", title: "New Task" }}
       />
+      <Stack.Screen
+        name="projects/index"
+        options={{ presentation: "modal", title: "Projects" }}
+      />
     </Stack>
   );
 }

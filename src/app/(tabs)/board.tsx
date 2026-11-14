@@ -2,7 +2,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { useProjectStore } from "@/store/useProjectStore";
 import { useTaskStore } from "@/store/useTaskStore";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 
 const Board = () => {

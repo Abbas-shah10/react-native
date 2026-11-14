@@ -186,6 +186,7 @@ const ProjectScreen = () => {
                 </View>
                 <Pressable
                   onPress={() => confirmDelete(project)}
+                  disabled={isLoading}
                   accessibilityRole="button"
                   accessibilityLabel={`Delete ${project.title}`}
                   className="rounded-lg px-2 py-1"
@@ -205,6 +206,7 @@ const ProjectScreen = () => {
                     <Pressable
                       key={status}
                       onPress={() => void changeStatus(project, status)}
+                      disabled={isLoading}
                       accessibilityRole="button"
                       accessibilityState={{ selected }}
                       className={`flex-1 items-center rounded-xl border px-2 py-2 ${selected ? "border-indigo-400 bg-indigo-500/15" : "border-slate-700 bg-slate-950"}`}
