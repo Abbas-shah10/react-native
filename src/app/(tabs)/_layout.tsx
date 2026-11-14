@@ -89,10 +89,10 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="settings"
         options={{
-          title: "Profile",
-          tabBarIcon: renderTabIcon("person", "person-outline"),
+          title: "Settings",
+          tabBarIcon: renderTabIcon("settings", "settings-outline"),
         }}
       />
     </Tabs>
