@@ -8,12 +8,13 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { create } from "zustand";
 import { useAuthStore } from "./useAuthStore";
 
-interface Project {
+export interface Project {
   id: string;
   title: string;
   description: string;
@@ -22,15 +23,16 @@ interface Project {
   createdAt: Date;
 }
 
+type ProjectUpdate = Partial<
+  Pick<Project, "title" | "description" | "status">
+>;
+
 interface ProjectState {
   projects: Project[];
   isLoading: boolean;
   addProject: (name: string, description: string) => Promise<void>;
   fetchProjects: (userId: string) => Promise<void>;
-  updateProject: (
-    projectId: string,
-    updatedFields: Record<string, any>,
-  ) => Promise<void>;
+  updateProject: (projectId: string, updatedFields: ProjectUpdate) => Promise<void>;
   deleteProject: (projectId: string) => Promise<void>;
 }
 
@@ -40,14 +42,14 @@ export const useProjectStore = create<ProjectState>((set) => ({
   addProject: async (title: string, description: string): Promise<void> => {
     const user = useAuthStore.getState().user;
     if (!user) {
-      throw new Error("You must be signed in to create a task.");
+      throw new Error("You must be signed in to create a project.");
     }
     set({ isLoading: true });
 
     try {
       const newProject: Omit<Project, "id"> = {
-        title,
-        description,
+        title: title.trim(),
+        description: description.trim(),
         status: "upcoming",
         userId: user.uid,
         createdAt: new Date(),
@@ -63,11 +65,13 @@ export const useProjectStore = create<ProjectState>((set) => ({
         isLoading: false,
       }));
     } catch (error: any) {
-      console.log("Error adding project:", error);
       set({ isLoading: false });
+      console.error("Error adding project:", error);
+      throw error;
     }
   },
   fetchProjects: async (userId: string) => {
+    set({ isLoading: true });
     try {
       let projectQuery = query(
         collection(db, "projects"),
@@ -91,12 +95,30 @@ export const useProjectStore = create<ProjectState>((set) => ({
       });
 
       set({ projects: loadedProjects, isLoading: false });
-    } catch (error: any) {
-      console.log(error.message || "Error fetching projects from firebase");
+    } catch (error) {
+      set({ isLoading: false });
+      console.error("Error fetching projects from Firestore:", error);
+      throw error;
     }
   },
-  updateProject: async () => {},
+  updateProject: async (projectId, updatedFields) => {
+    set({ isLoading: true });
+    try {
+      await updateDoc(doc(db, "projects", projectId), updatedFields);
+      set((state) => ({
+        projects: state.projects.map((project) =>
+          project.id === projectId ? { ...project, ...updatedFields } : project,
+        ),
+        isLoading: false,
+      }));
+    } catch (error) {
+      set({ isLoading: false });
+      console.error("Error updating project in Firestore:", error);
+      throw error;
+    }
+  },
   deleteProject: async (projectId: string) => {
+    set({ isLoading: true });
     try {
       const projectRef = doc(db, "projects", projectId);
 
@@ -104,9 +126,12 @@ export const useProjectStore = create<ProjectState>((set) => ({
 
       set((state) => ({
         projects: state.projects.filter((project) => project.id !== projectId),
+        isLoading: false,
       }));
-    } catch (error: any) {
-      console.log(error.message || "Error deleting project from firebase");
+    } catch (error) {
+      set({ isLoading: false });
+      console.error("Error deleting project from Firestore:", error);
+      throw error;
     }
   },
 }));
