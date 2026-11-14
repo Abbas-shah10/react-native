@@ -116,8 +116,24 @@ export const useTaskStore = create<TaskState>((set) => ({
       console.log(error.message || "Error fetching tasks from firebase");
     }
   },
-  updateTask: async () => {},
-  toggleTaskCompletion: async (taskId, currentStatus) => {
+  updateTask: async (taskId: string, updatedFields: Record<string, any>) => {
+    set({ isLoading: true });
+    try {
+      const taskRef = doc(db, "tasks", taskId);
+
+      await updateDoc(taskRef, updatedFields);
+
+      set((state) => ({
+        tasks: state.tasks.map((task) =>
+          task.id === taskId ? { ...task, ...updateDoc } : task,
+        ),
+        isLoading: false,
+      }));
+    } catch (error: any) {
+      console.log("Error updating task in Firestore:", error);
+    }
+  },
+  toggleTaskCompletion: async (taskId: string, currentStatus: boolean) => {
     set({ isLoading: true });
     try {
       const taskRef = doc(db, "tasks", taskId);
