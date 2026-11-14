@@ -1,122 +1,14 @@
-import { Ionicons } from "@expo/vector-icons";
 import { Redirect, Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import { Text, View } from "react-native";
 import { auth } from "../firebase/config";
 // @ts-ignore React Native's bundler handles this side-effect stylesheet import.
 import "../global.css";
 import { useAuthStore } from "../store/useAuthStore";
 
 SplashScreen.preventAutoHideAsync();
-
-function SplashBrand() {
-  return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: "#150b3d",
-        alignItems: "center",
-        justifyContent: "center",
-        paddingHorizontal: 24,
-      }}
-    >
-      <View
-        style={{
-          width: 268,
-          height: 182,
-          paddingTop: 18,
-          borderRadius: 28,
-          borderWidth: 4,
-          borderColor: "#5742b4",
-          backgroundColor: "#3f2c7a",
-          alignItems: "center",
-          justifyContent: "center",
-          shadowColor: "#000000",
-          shadowOpacity: 0.28,
-          shadowRadius: 18,
-          shadowOffset: { width: 0, height: 10 },
-          elevation: 18,
-        }}
-      >
-        <View
-          style={{
-            width: 136,
-            height: 118,
-            borderRadius: 28,
-            backgroundColor: "#f5f2ff",
-            alignItems: "center",
-            justifyContent: "center",
-            shadowColor: "#000000",
-            shadowOpacity: 0.15,
-            shadowRadius: 12,
-            shadowOffset: { width: 0, height: 8 },
-          }}
-        >
-          <View
-            style={{
-              width: 92,
-              height: 92,
-              borderRadius: 24,
-              backgroundColor: "#f5f2ff",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Ionicons name="checkmark" size={72} color="#3f2c7a" />
-          </View>
-        </View>
-      </View>
-
-      <View style={{ marginTop: 20, alignItems: "center" }}>
-        <Text
-          style={{
-            color: "#f4d36a",
-            fontSize: 38,
-            fontWeight: "800",
-            letterSpacing: -1.5,
-          }}
-        >
-          TaskFlow
-        </Text>
-        <Text
-          style={{
-            marginTop: 6,
-            color: "#f7efd4",
-            fontSize: 17,
-            fontWeight: "700",
-            letterSpacing: 0.2,
-          }}
-        >
-          Plan it. Flow it. Done.
-        </Text>
-      </View>
-
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          marginTop: 26,
-          gap: 10,
-        }}
-      >
-        {[0, 1, 2].map((index) => (
-          <View
-            key={index}
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: 999,
-              backgroundColor: index === 1 ? "#f4d36a" : "rgba(255,255,255,0.58)",
-            }}
-          />
-        ))}
-      </View>
-    </View>
-  );
-}
 
 export default function RootLayout() {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -162,8 +54,24 @@ export default function RootLayout() {
     }
   }, [appIsReady, isAuthLoading]);
 
+  // Show your styled loading container until everything is ready
   if (!appIsReady || isAuthLoading) {
-    return <SplashBrand />;
+    return (
+      <View
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#0B1220", // Matches your app.json background
+          height: "100vh",
+          width: "100vw",
+        }}
+      >
+        <Text style={{ color: "#fff" }}>Loading...</Text>
+      </View>
+    );
   }
 
   const isInAuthGroup = segments[0] === "(auth)";
