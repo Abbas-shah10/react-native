@@ -2,6 +2,8 @@ import { db } from "@/firebase/config";
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   getDocs,
   orderBy,
   query,
@@ -94,5 +96,17 @@ export const useProjectStore = create<ProjectState>((set) => ({
     }
   },
   updateProject: async () => {},
-  deleteProject: async () => {},
+  deleteProject: async (projectId: string) => {
+    try {
+      const projectRef = doc(db, "projects", projectId);
+
+      await deleteDoc(projectRef);
+
+      set((state) => ({
+        projects: state.projects.filter((project) => project.id !== projectId),
+      }));
+    } catch (error: any) {
+      console.log(error.message || "Error deleting project from firebase");
+    }
+  },
 }));
