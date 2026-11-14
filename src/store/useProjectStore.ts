@@ -23,16 +23,17 @@ export interface Project {
   createdAt: Date;
 }
 
-type ProjectUpdate = Partial<
-  Pick<Project, "title" | "description" | "status">
->;
+type ProjectUpdate = Partial<Pick<Project, "title" | "description" | "status">>;
 
 interface ProjectState {
   projects: Project[];
   isLoading: boolean;
   addProject: (name: string, description: string) => Promise<void>;
   fetchProjects: (userId: string) => Promise<void>;
-  updateProject: (projectId: string, updatedFields: ProjectUpdate) => Promise<void>;
+  updateProject: (
+    projectId: string,
+    updatedFields: ProjectUpdate,
+  ) => Promise<void>;
   deleteProject: (projectId: string) => Promise<void>;
 }
 
@@ -64,7 +65,7 @@ export const useProjectStore = create<ProjectState>((set) => ({
         projects: [{ id: docRef.id, ...newProject }, ...state.projects],
         isLoading: false,
       }));
-    } catch (error: any) {
+    } catch (error) {
       set({ isLoading: false });
       console.error("Error adding project:", error);
       throw error;
@@ -73,18 +74,11 @@ export const useProjectStore = create<ProjectState>((set) => ({
   fetchProjects: async (userId: string) => {
     set({ isLoading: true });
     try {
-      let projectQuery = query(
+      const projectQuery = query(
         collection(db, "projects"),
+        where("userId", "==", userId),
         orderBy("createdAt", "desc"),
       );
-
-      if (userId) {
-        projectQuery = query(
-          collection(db, "projects"),
-          where("userId", "==", userId),
-          orderBy("createdAt", "desc"),
-        );
-      }
 
       const querySnapShot = await getDocs(projectQuery);
       const loadedProjects: Project[] = [];
