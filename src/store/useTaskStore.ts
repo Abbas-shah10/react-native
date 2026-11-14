@@ -18,6 +18,7 @@ interface Task {
   id: string;
   title: string;
   description: string;
+  status: "upcoming" | "inProgress" | "done";
   completed: boolean;
   priority: "low" | "medium" | "high";
   userId: string;
@@ -142,10 +143,14 @@ export const useTaskStore = create<TaskState>((set) => ({
 
       set((state) => ({
         tasks: state.tasks.map((task) =>
-          task.id === taskId ? { ...task, completed: true } : task,
+          task.id === taskId
+            ? { ...task, completed: !currentStatus }
+            : task,
         ),
+        isLoading: false,
       }));
     } catch (error) {
+      set({ isLoading: false });
       console.error("Error updating task in Firestore:", error);
       throw error;
     }
