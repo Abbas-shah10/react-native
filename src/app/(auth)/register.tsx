@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 
-const register = () => {
+const Register = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,12 +39,12 @@ const register = () => {
     }
   };
   return (
-    <View className="flex-1 bg-white justify-center px-6">
-      <View className="bg-white rounded-2xl  p-8 w-full">
-        <Text className="text-2xl font-bold text-gray-900 mb-1">
+    <View className="flex-1 bg-slate-950 justify-center px-6">
+      <View className="bg-slate-950 rounded-2xl  p-8 w-full">
+        <Text className="text-2xl font-bold text-gray-200 mb-1">
           Create Account
         </Text>
-        <Text className="text-base text-gray-500 mb-6">
+        <Text className="text-base text-gray-200 mb-6">
           Get started with your new profile
         </Text>
 
@@ -53,7 +53,7 @@ const register = () => {
         ) : null}
 
         <View className="mb-4">
-          <Text className="text-gray-700 mb-1">Email Address</Text>
+          <Text className="text-gray-200 mb-1">Email Address</Text>
           <TextInput
             className="border border-gray-300 rounded-lg px-4 py-2 text-gray-900 bg-gray-50"
             placeholder="name@example.com"
@@ -66,7 +66,7 @@ const register = () => {
         </View>
 
         <View className="mb-4">
-          <Text className="text-gray-700 mb-1">Password</Text>
+          <Text className="text-gray-200 mb-1">Password</Text>
           <TextInput
             className="border border-gray-300 rounded-lg px-4 py-2 text-gray-900 bg-gray-50"
             placeholder="••••••••"
@@ -78,7 +78,7 @@ const register = () => {
         </View>
 
         <View className="mb-6">
-          <Text className="text-gray-700 mb-1">Confirm Password</Text>
+          <Text className="text-gray-200 mb-1">Confirm Password</Text>
           <TextInput
             className="border border-gray-300 rounded-lg px-4 py-2 text-gray-900 bg-gray-50"
             placeholder="••••••••"
@@ -115,4 +115,4 @@ const register = () => {
   );
 };
 
-export default register;
+export default Register;

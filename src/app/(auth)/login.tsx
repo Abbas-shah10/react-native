@@ -36,10 +36,12 @@ const Login = () => {
   };
 
   return (
-    <View className="flex-1 justify-center bg-white px-6">
+    <View className="flex-1 justify-center bg-slate-950 px-6">
       <View className="w-full max-w-md self-center">
-        <Text className="mb-2 text-3xl font-bold text-white">Welcome back</Text>
-        <Text className="mb-8  text-center text-2xl font-bold text-slate-800">
+        <Text className="mb-2 text-3xl font-bold text-white text-center">
+          Welcome back
+        </Text>
+        <Text className="mb-8 text-white text-center text-2xl font-bold ">
           Sign in to continue to your account.
         </Text>
 
@@ -47,7 +49,7 @@ const Login = () => {
           <Text className="text-red-500 mb-4 text-center">{error}</Text>
         ) : null}
 
-        <Text className="mb-2 text-sm font-medium text-black">Email</Text>
+        <Text className="mb-2 text-sm font-medium text-white">Email</Text>
         <TextInput
           className="mb-5 rounded-xl border border-slate-700 bg-white px-4 py-4 text-black"
           placeholder="you@example.com"
@@ -59,7 +61,7 @@ const Login = () => {
           onChangeText={setEmail}
         />
 
-        <Text className="mb-2 text-sm font-medium text-black">Password</Text>
+        <Text className="mb-2 text-sm font-medium text-white">Password</Text>
         <TextInput
           className="rounded-xl border border-slate-700 bg-white px-4 py-4 text-black"
           placeholder="Enter your password"
@@ -89,13 +91,13 @@ const Login = () => {
         </TouchableOpacity>
 
         <View className="mt-8 flex-row justify-center">
-          <Text className="text-slate-400">Don't have an account? </Text>
+          <Text className="text-slate-100">Don't have an account? </Text>
           <Pressable>
             <TouchableOpacity
-              className="font-semibold text-indigo-400"
+              className="font-semibold transition-all text-blue-700 hover:text-blue-400"
               onPress={() => router.push("/register")}
             >
-              Register
+              <Text className="text-blue-700 font-semibold">Register</Text>
             </TouchableOpacity>
           </Pressable>
         </View>
