@@ -2,8 +2,6 @@ import { Pressable, Text, View } from "react-native";
 
 const settingsItems = [
   { icon: "👤", label: "Account", value: "Profile", accent: "bg-blue-100" },
-  { icon: "🔔", label: "Notifications", value: "On", accent: "bg-yellow-100" },
-  { icon: "🔒", label: "Privacy", value: "Secure", accent: "bg-green-100" },
   { icon: "ℹ️", label: "About", value: "App", accent: "bg-purple-100" },
 ];
 
