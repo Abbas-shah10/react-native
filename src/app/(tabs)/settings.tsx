@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/store/useAuthStore";
 import { useRouter } from "expo-router";
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
 
@@ -7,7 +8,12 @@ const settingsItems = [
 ];
 
 const Settings = () => {
+  const { logout, isLoading } = useAuthStore();
   const router = useRouter();
+
+  const handleLogout = async () => {
+    await logout();
+  };
   return (
     <View className="flex-1 bg-slate-950 px-4 py-6">
       <Text className="text-3xl font-bold text-gray-300 text-center  mb-6">
@@ -38,8 +44,13 @@ const Settings = () => {
       </View>
 
       <View>
-        <TouchableOpacity className="text-center hover:bg-red-600 rounded-2xl border px-4 py-3 bg-red-900 text-white">
-          Log Out
+        <TouchableOpacity
+          onPress={() => handleLogout}
+          className="text-center hover:bg-red-600 rounded-2xl border px-4 py-3 bg-red-900 "
+        >
+          <Text className="text-center text-white">
+            {isLoading ? "Loading..." : "Logout"}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
