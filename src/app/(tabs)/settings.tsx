@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 
 const settingsItems = [
   { icon: "👤", label: "Profile", value: "Profile", accent: "bg-blue-100" },
@@ -35,6 +35,12 @@ const Settings = () => {
             <Text className="text-sm text-gray-500">{value}</Text>
           </Pressable>
         ))}
+      </View>
+
+      <View>
+        <TouchableOpacity className="text-center hover:bg-red-600 rounded-2xl border px-4 py-3 bg-red-900 text-white">
+          Log Out
+        </TouchableOpacity>
       </View>
     </View>
   );
