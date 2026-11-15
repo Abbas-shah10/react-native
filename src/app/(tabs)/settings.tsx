@@ -1,11 +1,13 @@
+import { useRouter } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 
 const settingsItems = [
-  { icon: "👤", label: "Account", value: "Profile", accent: "bg-blue-100" },
+  { icon: "👤", label: "Profile", value: "Profile", accent: "bg-blue-100" },
   { icon: "ℹ️", label: "About", value: "App", accent: "bg-purple-100" },
 ];
 
 const Settings = () => {
+  const router = useRouter();
   return (
     <View className="flex-1 bg-slate-950 px-4 py-6">
       <Text className="text-3xl font-bold text-gray-300 text-center  mb-6">
@@ -16,6 +18,7 @@ const Settings = () => {
         {settingsItems.map(({ icon, label, value, accent }) => (
           <Pressable
             key={label}
+            onPress={() => router.push(`/settings/${label}`)}
             className="flex-row items-center justify-between border-b border-gray-200 py-3 last:border-b-0"
           >
             <View className="flex-row items-center">
