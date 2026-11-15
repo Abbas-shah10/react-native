@@ -1,7 +1,42 @@
-import { View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
-const Profile = () => {
-  return <View>Profile</View>;
+const settingsItems = [
+  { icon: "👤", label: "Account", value: "Profile", accent: "bg-blue-100" },
+  { icon: "🔔", label: "Notifications", value: "On", accent: "bg-yellow-100" },
+  { icon: "🔒", label: "Privacy", value: "Secure", accent: "bg-green-100" },
+  { icon: "ℹ️", label: "About", value: "App", accent: "bg-purple-100" },
+];
+
+const Settings = () => {
+  return (
+    <View className="flex-1 bg-slate-950 px-4 py-6">
+      <Text className="text-3xl font-bold text-gray-300 text-center  mb-6">
+        Settings
+      </Text>
+
+      <View className="rounded-2xl bg-slate-950 text-white p-4 shadow-sm">
+        {settingsItems.map(({ icon, label, value, accent }) => (
+          <Pressable
+            key={label}
+            className="flex-row items-center justify-between border-b border-gray-200 py-3 last:border-b-0"
+          >
+            <View className="flex-row items-center">
+              <View
+                className={`h-9 w-9 items-center justify-center rounded-full ${accent}`}
+              >
+                <Text className="text-lg">{icon}</Text>
+              </View>
+              <Text className="ml-3 text-base font-medium text-gray-300">
+                {label}
+              </Text>
+            </View>
+
+            <Text className="text-sm text-gray-500">{value}</Text>
+          </Pressable>
+        ))}
+      </View>
+    </View>
+  );
 };
 
-export default Profile;
+export default Settings;

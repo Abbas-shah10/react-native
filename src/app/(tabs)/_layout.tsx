@@ -91,7 +91,7 @@ export default function Layout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: "Settings",
+          headerShown: false,
           tabBarIcon: renderTabIcon("settings", "settings-outline"),
         }}
       />
