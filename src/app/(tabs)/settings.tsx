@@ -45,7 +45,7 @@ const Settings = () => {
 
       <View>
         <TouchableOpacity
-          onPress={() => handleLogout}
+          onPress={handleLogout}
           className="text-center hover:bg-red-600 rounded-2xl border px-4 py-3 bg-red-900 "
         >
           <Text className="text-center text-white">
