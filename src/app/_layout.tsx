@@ -1,6 +1,6 @@
 import { Redirect, Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { onAuthStateChanged } from "firebase/auth";
+import { onIdTokenChanged, signOut } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { auth } from "../firebase/config";
@@ -37,12 +37,50 @@ export default function RootLayout() {
     prepareApp();
   }, []);
 
-  // 2. Handle Firebase Auth subscription syncing to Zustand
+  // 2. Sync Firebase auth and clear locally persisted state for invalid sessions.
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    let isActive = true;
+
+    const unsubscribe = onIdTokenChanged(auth, async (currentUser) => {
+      if (!currentUser) {
+        if (isActive) setUser(null);
+        return;
+      }
+
+      try {
+        // A forced refresh lets Firebase detect revoked refresh tokens/deleted users.
+        await currentUser.getIdToken(true);
+        if (isActive && auth.currentUser?.uid === currentUser.uid) {
+          setUser(currentUser);
+        }
+      } catch (error) {
+        const code = (error as { code?: string })?.code;
+        const invalidSession = [
+          "auth/user-token-expired",
+          "auth/invalid-user-token",
+          "auth/user-disabled",
+          "auth/user-not-found",
+        ].includes(code ?? "");
+
+        if (invalidSession && auth.currentUser?.uid === currentUser.uid) {
+          await signOut(auth).catch((signOutError) =>
+            console.warn(
+              "Could not clear invalid Firebase session:",
+              signOutError,
+            ),
+          );
+          if (isActive) setUser(null);
+        } else if (isActive && auth.currentUser?.uid === currentUser.uid) {
+          // Preserve the session on transient network failures.
+          setUser(currentUser);
+        }
+      }
     });
-    return unsubscribe;
+
+    return () => {
+      isActive = false;
+      unsubscribe();
+    };
   }, [setUser]);
 
   // 3. Hide splash screen ONLY when app assets are ready AND firebase auth check is done
