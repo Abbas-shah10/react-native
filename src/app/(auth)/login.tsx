@@ -1,3 +1,4 @@
+import { HeaderLogo } from "@/components/HeaderLogo";
 import { auth } from "@/firebase/config";
 import { useRouter } from "expo-router";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -38,6 +39,7 @@ const Login = () => {
   return (
     <View className="flex-1 justify-center bg-slate-950 px-6">
       <View className="w-full max-w-md self-center">
+        <HeaderLogo />
         <Text className="mb-2 text-3xl font-bold text-white text-center">
           Welcome back
         </Text>
