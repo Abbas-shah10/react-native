@@ -35,7 +35,6 @@ export default function ProfileScreen() {
 
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={() => console.log("Edit Profile")}
           className="rounded-full bg-blue-600 px-4 py-2.5"
         >
           <Text className="text-sm font-semibold text-white">Edit</Text>
