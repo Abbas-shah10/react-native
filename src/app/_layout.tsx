@@ -1,10 +1,10 @@
 import { Redirect, Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { onIdTokenChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { auth } from "../firebase/config";
-// @ts-ignore React Native's bundler handles this side-effect stylesheet import.
+// @ts-expect-error Expo handles this global CSS import at runtime.
 import "../global.css";
 import { useAuthStore } from "../store/useAuthStore";
 
@@ -12,99 +12,36 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [appIsReady, setAppIsReady] = useState(false);
-  const {
-    user,
-    setUser,
-    isLoading: isAuthLoading,
-  } = useAuthStore() as {
-    user: typeof auth.currentUser;
-    setUser: (user: typeof auth.currentUser) => void;
-    isLoading: boolean;
-  };
+  const { user, setUser } = useAuthStore();
   const segments = useSegments();
 
-  // 1. Handle app preparation assets
+  // Wait for the app and Firebase to be ready.
   useEffect(() => {
-    async function prepareApp() {
-      try {
-        await new Promise((resolve) => setTimeout(resolve, 300));
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setAppIsReady(true);
-      }
-    }
-    prepareApp();
-  }, []);
-
-  // 2. Sync Firebase auth and clear locally persisted state for invalid sessions.
-  useEffect(() => {
-    let isActive = true;
-
-    const unsubscribe = onIdTokenChanged(auth, async (currentUser) => {
-      if (!currentUser) {
-        if (isActive) setUser(null);
-        return;
-      }
-
-      try {
-        // A forced refresh lets Firebase detect revoked refresh tokens/deleted users.
-        await currentUser.getIdToken(true);
-        if (isActive && auth.currentUser?.uid === currentUser.uid) {
-          setUser(currentUser);
-        }
-      } catch (error) {
-        const code = (error as { code?: string })?.code;
-        const invalidSession = [
-          "auth/user-token-expired",
-          "auth/invalid-user-token",
-          "auth/user-disabled",
-          "auth/user-not-found",
-        ].includes(code ?? "");
-
-        if (invalidSession && auth.currentUser?.uid === currentUser.uid) {
-          await signOut(auth).catch((signOutError) =>
-            console.warn(
-              "Could not clear invalid Firebase session:",
-              signOutError,
-            ),
-          );
-          if (isActive) setUser(null);
-        } else if (isActive && auth.currentUser?.uid === currentUser.uid) {
-          // Preserve the session on transient network failures.
-          setUser(currentUser);
-        }
-      }
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setAppIsReady(true);
     });
 
-    return () => {
-      isActive = false;
-      unsubscribe();
-    };
+    return unsubscribe;
   }, [setUser]);
 
-  // 3. Hide splash screen ONLY when app assets are ready AND firebase auth check is done
+  // Hide the splash screen after Firebase has checked the login state.
   useEffect(() => {
-    if (appIsReady && !isAuthLoading) {
-      SplashScreen.hideAsync().catch((err) =>
-        console.warn("Splash hide error:", err),
+    if (appIsReady) {
+      SplashScreen.hideAsync().catch((error) =>
+        console.warn("Splash screen error:", error),
       );
     }
-  }, [appIsReady, isAuthLoading]);
+  }, [appIsReady]);
 
-  // Show your styled loading container until everything is ready
-  if (!appIsReady || isAuthLoading) {
+  if (!appIsReady) {
     return (
       <View
         style={{
           flex: 1,
-          display: "flex",
-          flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "#0B1220", // Matches your app.json background
-          height: "100vh",
-          width: "100vw",
+          backgroundColor: "#0B1220",
         }}
       >
         <Text style={{ color: "#fff" }}>Loading...</Text>
@@ -113,17 +50,19 @@ export default function RootLayout() {
   }
 
   const isInAuthGroup = segments[0] === "(auth)";
+
   if (!user && !isInAuthGroup) {
     return <Redirect href="/(auth)/login" />;
   }
+
   if (user && isInAuthGroup) {
     return <Redirect href="/(tabs)" />;
   }
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="(auth)" />
+      <Stack.Screen name="(tabs)" />
       <Stack.Screen
         name="tasks/index"
         options={{ presentation: "modal", title: "New Task" }}
