@@ -44,7 +44,7 @@ const Task = () => {
 
   return (
     <ScrollView
-      className="flex-1 bg-slate-50"
+      className="flex-1 bg-slate-950"
       contentContainerStyle={{ flexGrow: 1 }}
       keyboardShouldPersistTaps="handled"
     >
@@ -60,28 +60,16 @@ const Task = () => {
           </Pressable>
           <View>
             <Text className="text-sm font-medium text-slate-500">MY TASKS</Text>
-            <Text className="mt-1 text-2xl font-bold text-slate-900">
+            <Text className="mt-1 text-2xl font-bold text-slate-200">
               Create a task
             </Text>
           </View>
         </View>
 
-        {/* <View className="mb-6 rounded-3xl bg-indigo-600 p-5">
-          <Text className="text-sm font-medium text-indigo-100">
-            A fresh start
-          </Text>
-          <Text className="mt-2 text-xl font-bold text-white">
-            Make room for what matters.
-          </Text>
-          <Text className="mt-1 text-sm leading-5 text-indigo-100">
-            Break it down, set a deadline, and get moving.
-          </Text>
-        </View> */}
-
         {error && <Text className="text-red-500">{error}</Text>}
 
         <View className="mb-5">
-          <Text className="mb-2 text-sm font-semibold text-slate-800">
+          <Text className="mb-2 text-sm font-semibold text-slate-200">
             Task title <Text className="text-rose-500">*</Text>
           </Text>
           <TextInput
@@ -95,9 +83,9 @@ const Task = () => {
         </View>
 
         <View className="mb-5">
-          <Text className="mb-2 text-sm font-semibold text-slate-800">
+          <Text className="mb-2 text-sm font-semibold text-slate-200">
             Description{" "}
-            <Text className="font-normal text-slate-400">(optional)</Text>
+            <Text className="font-normal text-slate-200">(optional)</Text>
           </Text>
           <TextInput
             className="min-h-[112px] rounded-2xl border border-slate-200 bg-white px-4 py-4 text-base text-slate-900"
@@ -111,7 +99,7 @@ const Task = () => {
         </View>
 
         <View className="mb-5">
-          <Text className="mb-2 text-sm font-semibold text-slate-800">
+          <Text className="mb-2 text-sm font-semibold text-slate-200">
             Due date
           </Text>
           <TextInput
@@ -124,7 +112,7 @@ const Task = () => {
         </View>
 
         <View className="mb-8">
-          <Text className="mb-3 text-sm font-semibold text-slate-800">
+          <Text className="mb-3 text-sm font-semibold text-slate-200">
             Priority
           </Text>
           <View className="flex-row">
