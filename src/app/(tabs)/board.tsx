@@ -114,9 +114,7 @@ const Board = () => {
             <Pressable
               key={task.id}
               accessibilityRole="checkbox"
-              onPress={() =>
-                void handleTaskCompletion(task.id, task.completed)
-              }
+              onPress={() => void handleTaskCompletion(task.id, task.completed)}
               accessibilityLabel={`${task.title}, ${label}`}
               accessibilityState={{ checked: done }}
               className="flex-row items-center rounded-2xl border border-slate-800 bg-slate-900 p-4"
