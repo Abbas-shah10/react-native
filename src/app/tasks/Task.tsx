@@ -138,7 +138,7 @@ const Task = () => {
         <Pressable
           onPress={createTask}
           disabled={loading}
-          className="items-center rounded-2xl bg-indigo-600 py-4 active:bg-indigo-700"
+          className="items-center rounded-2xl bg-blue-600 py-4 active:bg-indigo-700"
         >
           {loading ? (
             <ActivityIndicator color="#fff" />
