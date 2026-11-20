@@ -1,8 +1,11 @@
 {
   "expo": {
     "name": "TaskFlow",
-    "slug": "taskflow",
+    "slug": "taskflow-app",
     "version": "1.0.0",
+    "android": {
+      "package": "com.abbaskhan.taskflowapp"
+    },
     "plugins": [
       [
         "expo-splash-screen",
@@ -13,6 +16,11 @@
           "resizeMode": "contain"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "ced89bdd-25dc-4bcb-a01d-b0f950d722b5"
+      }
+    }
   }
 }
