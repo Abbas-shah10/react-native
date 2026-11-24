@@ -1,11 +1,23 @@
 {
   "expo": {
     "name": "TaskFlow",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#12343B"
+    },
     "slug": "taskflow-app",
     "version": "1.0.0",
     "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "monochromeImage": "./assets/adaptive-icon-monochrome.png",
+        "backgroundColor": "#12343B"
+      },
       "package": "com.abbaskhan.taskflowapp"
     },
+    "web": { "favicon": "./assets/favicon.png" },
     "plugins": [
       [
         "expo-splash-screen",
