@@ -91,7 +91,7 @@ const Login = () => {
         </TouchableOpacity>
 
         <View className="mt-8 flex-row justify-center">
-          <Text className="text-slate-100">Don't have an account? </Text>
+          <Text className="text-slate-100">Don&apos;t have an account? </Text>
           <Pressable>
             <TouchableOpacity
               className="font-semibold transition-all text-blue-700 hover:text-blue-400"
