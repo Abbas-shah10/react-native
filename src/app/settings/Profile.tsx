@@ -27,7 +27,7 @@ export default function ProfileScreen() {
           className="rounded-full bg-gray-100 px-4 py-2.5 dark:bg-neutral-800"
         >
           <Text className="text-sm font-semibold text-gray-700 dark:text-gray-200">
-            <Ionicons name="arrow-back-outline" size={24} />
+            <Ionicons name="arrow-back" size={20} />
           </Text>
         </Pressable>
         <Text className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
