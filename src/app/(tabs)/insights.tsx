@@ -77,7 +77,7 @@ const Insights = () => {
 
   return (
     <ScrollView
-      className="flex-1 bg-slate-900"
+      className="flex-1 bg-slate-950"
       contentContainerClassName="px-4 pb-10 pt-12"
     >
       <Text className="text-2xl font-bold text-slate-200">Insights</Text>
