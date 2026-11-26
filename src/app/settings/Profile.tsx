@@ -30,7 +30,7 @@ export default function ProfileScreen() {
             <Ionicons name="arrow-back" size={20} />
           </Text>
         </Pressable>
-        <Text className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+        <Text className="text-2xl font-bold tracking-tight text-gray-200">
           Profile
         </Text>
 
