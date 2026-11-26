@@ -56,10 +56,10 @@ export default function DashboardScreen() {
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      className="flex-1 px-4 py-4 bg-slate-950 "
+      className="flex-1 px-4 bg-slate-950 "
     >
       {/* Header Section */}
-      <View className="flex-row justify-between items-center mb-6 mt-14">
+      <View className="flex-row justify-between items-center mb-6 mt-6">
         <View>
           <Text className="text-slate-500 dark:text-slate-400 text-sm font-medium">
             Welcome back,
@@ -115,9 +115,7 @@ export default function DashboardScreen() {
 
       {/* Subtitle Section */}
       <View className="flex-row items-center justify-between mb-4">
-        <Text className="text-white dark:text-black text-lg font-bold">
-          Upcoming Tasks
-        </Text>
+        <Text className="text-white  text-lg font-bold">Upcoming Tasks</Text>
         {tasks.length > 0 && (
           <TouchableOpacity>
             <Text className="text-blue-600 dark:text-blue-400 font-semibold">

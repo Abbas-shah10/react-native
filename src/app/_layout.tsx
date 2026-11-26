@@ -3,6 +3,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { auth } from "../firebase/config";
 // @ts-expect-error Expo handles this global CSS import at runtime.
 import "../global.css";
@@ -60,17 +61,19 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(auth)" />
-      <Stack.Screen name="(tabs)" />
-      <Stack.Screen
-        name="tasks/index"
-        options={{ presentation: "modal", title: "New Task" }}
-      />
-      <Stack.Screen
-        name="projects/index"
-        options={{ presentation: "modal", title: "Projects" }}
-      />
-    </Stack>
+    <SafeAreaProvider>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen
+          name="tasks/index"
+          options={{ presentation: "modal", title: "New Task" }}
+        />
+        <Stack.Screen
+          name="projects/index"
+          options={{ presentation: "modal", title: "Projects" }}
+        />
+      </Stack>
+    </SafeAreaProvider>
   );
 }
