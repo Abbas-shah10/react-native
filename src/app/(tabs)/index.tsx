@@ -56,15 +56,15 @@ export default function DashboardScreen() {
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      className="flex-1 px-4 py-4 bg-slate-50 dark:bg-slate-950"
+      className="flex-1 px-4 py-4 bg-slate-950 "
     >
       {/* Header Section */}
-      <View className="flex-row justify-between items-center mb-6 mt-2">
+      <View className="flex-row justify-between items-center mb-6 mt-14">
         <View>
           <Text className="text-slate-500 dark:text-slate-400 text-sm font-medium">
             Welcome back,
           </Text>
-          <Text className="font-bold text-2xl text-black dark:text-white mt-0.5">
+          <Text className="font-bold text-2xl text-white dark:text-white mt-0.5">
             {email ? email.split("@")[0] : "User"}
           </Text>
         </View>
@@ -78,7 +78,7 @@ export default function DashboardScreen() {
       {/* Task Management Title Bar */}
       <View className="flex-row items-center justify-between mb-4">
         <View className="flex-1 pr-4">
-          <Text className="text-black dark:text-white text-xl font-bold">
+          <Text className="text-white dark:text-white text-xl font-bold">
             My tasks
           </Text>
           <Text className="text-slate-500 dark:text-slate-400 text-sm mt-1">
@@ -115,7 +115,7 @@ export default function DashboardScreen() {
 
       {/* Subtitle Section */}
       <View className="flex-row items-center justify-between mb-4">
-        <Text className="text-black dark:text-white text-lg font-bold">
+        <Text className="text-white dark:text-black text-lg font-bold">
           Upcoming Tasks
         </Text>
         {tasks.length > 0 && (
