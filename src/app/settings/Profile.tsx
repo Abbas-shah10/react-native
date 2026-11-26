@@ -1,5 +1,6 @@
 import { auth } from "@/firebase/config";
 import { useAuthStore } from "@/store/useAuthStore";
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import {
   Pressable,
@@ -26,7 +27,7 @@ export default function ProfileScreen() {
           className="rounded-full bg-gray-100 px-4 py-2.5 dark:bg-neutral-800"
         >
           <Text className="text-sm font-semibold text-gray-700 dark:text-gray-200">
-            Back
+            <Ionicons name="arrow-back-outline" size={24} />
           </Text>
         </Pressable>
         <Text className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
